@@ -18,7 +18,30 @@ app.use(cors());
 app.use(express.json());
 
 // Connecting to MongoDB
+
+
 client.connect()
+
+.then(async () => {
+    console.log("Connected to MongoDB");
+
+    const db = client.db('userData');
+
+    // Ensure 'users' collection exists
+    const collections = await db.listCollections({ name: "users" }).toArray();
+    if (collections.length === 0) {
+      await db.createCollection("users");
+      console.log("Users collection created!");
+    }
+
+    // Ensure 'matches' collection exists
+    const matchCollections = await db.listCollections({ name: "matches" }).toArray();
+    if (matchCollections.length === 0) {
+      await db.createCollection("matches");
+      console.log("Matches collection created!");
+    }
+
+  })
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.log("MongoDB connection error:", err));
 
@@ -57,8 +80,13 @@ app.get('/api/users', async (req, res) => {
   });
   
   // Route for user signup
-  app.post('/api/signup', async (req, res) => {
+  // Route for user signup
+app.post('/api/signup', async (req, res) => {
     const { name, email, password, age, location } = req.body;
+    
+    // Log the signup data to the console
+    console.log('Signup data received:', { name, email, password, age, location });
+  
     const db = client.db('userData');
     const usersCollection = db.collection('users');
     
@@ -72,6 +100,7 @@ app.get('/api/users', async (req, res) => {
     
     res.status(201).json(newUser);  // Return the newly created user
   });
+  
   
   // Start the server
   app.listen(port, () => {
