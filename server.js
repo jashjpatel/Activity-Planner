@@ -66,8 +66,13 @@ app.get('/api/users', async (req, res) => {
   });
   
   // Route for user login (simple mock)
-  app.post('/api/login', async (req, res) => {
+  // Route for user login (simple mock)
+app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
+  
+    // Log the login data to the console
+    console.log('Login data received:', { email, password });
+  
     const db = client.db('userData');
     const usersCollection = db.collection('users');
     
@@ -78,6 +83,7 @@ app.get('/api/users', async (req, res) => {
       res.status(401).json({ error: "Invalid email or password" });
     }
   });
+  
   
   // Route for user signup
   // Route for user signup
